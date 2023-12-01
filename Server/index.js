@@ -3,6 +3,11 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const bcrypt = require("bcrypt");
+const jwt= require('jsonwebtoken')
+const dotenv=require("dotenv")
+dotenv.config()
+
 
 const mongoose = require("mongoose");
 
@@ -10,7 +15,6 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
-const port = 3000;
 app.get("/", (req, res) => {
   res.json({ message: "server" });
 });
@@ -27,13 +31,14 @@ const userInfo = mongoose.model("userInfo", {
 app.post("/api/signup", async (req, res) => {
   try {
     const { firstName, lastName, email, password, mobile, age } = req.body;
+    const encryptedPassword = await bcrypt.hash(password, 10);
     await userInfo.create({
       firstName,
       lastName,
       email,
-      password,
+      password:encryptedPassword,
       mobile,
-      age,
+      age, 
     });
     res.json({
       status: "SUCCESS",
@@ -48,12 +53,42 @@ app.post("/api/signup", async (req, res) => {
   }
 });
 
-app.listen(port, () => {
+app.post("/api/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await userInfo.findOne({email });
+
+    if (user && user.password) {
+      let hasPasswordMatched = await bcrypt.compare(password, user.password);
+      if (hasPasswordMatched) {
+        const token=jwt.sign({userId:user._id},'123',{expiresIn:'1h'})//token creation
+        res.json({
+          message: "You have Logged In succesfully",
+          status: true,//to check if login succesfull
+          token:token //token passed
+        });
+      } else {
+        res.json({
+          message: "Incorrect Password",
+          status: false
+        });
+      }
+    } else {
+      res.json({
+        message: "User Does not Exist",
+        status: "false",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.listen(process.env.PORT, () => {
   mongoose
-    .connect(
-       "mongodb+srv://admin:admin1761@cluster0.0ljqxdd.mongodb.net/?retryWrites=true&w=majority" )
+    .connect(process.env.MONGODB_URL)
     .then(() =>
-      console.log("Connection Succesfull and Server running on port 3000")
+      console.log(`Connection Succesfull and Server running on port: ${process.env.PORT}`)
     )
     .catch((error) => console.log(error));
 });

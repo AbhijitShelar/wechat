@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import './styles/Signup.css';
-import axios from 'axios';
+import React, { useState } from "react";
+import "./styles/Signup.css";
+import axios from "axios";
 const Signup = ({ onClose }) => {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    mobile: '',
-    age: '',
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    mobile: "",
+    age: "",
   });
 
   const handleChange = (e) => {
@@ -18,16 +18,16 @@ const Signup = ({ onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        const response = await axios.post('http://localhost:3000/api/signup', formData);
-  
-        // Handle the response (success or error) here
-        console.log(response.data.message);
-      } catch (error) {
-        // Handle errors (e.g., invalid credentials, server error) here
-        console.error('Login error:', error.message);
-      }
+      const response = await axios.post(
+        "http://localhost:3000/api/signup",
+        formData
+      );
+       
+      console.log(response.data.message);
+    } catch (error) {
+      console.error("Login error:", error.message);
+    }
 
-    
     onClose();
   };
 
