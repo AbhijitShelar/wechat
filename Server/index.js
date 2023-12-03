@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
 const jwt= require('jsonwebtoken')
 const dotenv=require("dotenv")
+const intilaizeSocket=require("./socket")
 dotenv.config()
 
 
@@ -14,7 +15,12 @@ const mongoose = require("mongoose");
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
 app.use(cors());
+
+const server= require('http').createServer(app)
+const io = intilaizeSocket(server);
+
 app.get("/", (req, res) => {
   res.json({ message: "server" });
 });
@@ -53,6 +59,18 @@ app.post("/api/signup", async (req, res) => {
   }
 });
 
+app.post("/api/validateToken", (req, res) => {
+  const { token } = req.body;
+
+  if (!token) {
+    return res.json({
+      status: false,
+      message: "Token not provided",
+    });
+  }
+
+});
+
 app.post("/api/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -65,7 +83,8 @@ app.post("/api/login", async (req, res) => {
         res.json({
           message: "You have Logged In succesfully",
           status: true,//to check if login succesfull
-          token:token //token passed
+          token:token, //token passed
+          name:user.firstName
         });
       } else {
         res.json({
@@ -76,13 +95,14 @@ app.post("/api/login", async (req, res) => {
     } else {
       res.json({
         message: "User Does not Exist",
-        status: "false",
+        status: false,
       });
     }
   } catch (error) {
     console.log(error);
   }
 });
+
 
 app.listen(process.env.PORT, () => {
   mongoose

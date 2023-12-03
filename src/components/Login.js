@@ -1,11 +1,14 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useMyContext } from "../context/ChatContext";
 import "./styles/Login.css";
 import axios from "axios";
 
+// ... (other imports)
+
 const Login = ({ onClose }) => {
   const navigate = useNavigate();
-  
+  const { setIsAuthenticated } = useMyContext();
 
   const [showPopup, setShowPopup] = useState(true);
   const [formData, setFormData] = useState({
@@ -16,6 +19,15 @@ const Login = ({ onClose }) => {
   useEffect(() => {
     setShowPopup(true);
   }, []);
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("token"); // Use sessionStorage
+    if (token) {
+      setIsAuthenticated(true);
+      navigate("/dashboard");
+    }
+  }, [setIsAuthenticated, navigate]);
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -33,17 +45,20 @@ const Login = ({ onClose }) => {
         formData
       );
 
-      const status = response.data.status;
-      console.log(status);
+      const { status, token,name } = response.data;
+
       if (status) {
-        localStorage.setItem("token", response.data.token);
-       
+        setIsAuthenticated(true);
+        sessionStorage.setItem("token", token); // Use sessionStorage
+        sessionStorage.setItem("name",name);
         navigate("/dashboard");
+      } else {
+        setIsAuthenticated(false);
       }
       setShowPopup(false);
     } catch (error) {
       console.log(error);
-      console.log("here is error");
+      console.log("Here is an error");
     }
   };
 
