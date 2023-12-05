@@ -2,14 +2,14 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
-const http = require("http"); // Import http module
 const socketIO = require("socket.io");
 const mongoose = require("mongoose");
+const http = require("http"); // Import http module
+
+const initializeSocket = require("./socket");
 dotenv.config();
-
-
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -17,32 +17,9 @@ app.use(bodyParser.json());
 app.use(cors());
 
 const server = http.createServer(app); // Create an HTTP server
-const io = socketIO(server, {
-  cors: {
-    origin: 'http://localhost:3001', // Update with the correct origin of your client application
-    methods: ['GET', 'POST'],
-  },
-});
 
-const users = {};
-
-io.on('connection', (socket) => {
-  console.log("A user connected");
-
-  socket.on('user-joined', (name) => {
-    users[socket.id] = name;
-    console.log(name);
-    socket.broadcast.emit('user-joined', name);
-  });
-
-  socket.on('send', (message) => {
-    socket.broadcast.emit('recieve', { message: message, name: users[socket.id] });
-  });
-
-  socket.on('disconnect', () => {
-    console.log("user disconnected");
-  });
-});
+// Initialize socket and pass the server to it
+const io = initializeSocket(server);
 
 app.get("/", (req, res) => {
   res.json({ message: "server" });
@@ -101,17 +78,19 @@ app.post("/api/login", async (req, res) => {
     if (user && user.password) {
       let hasPasswordMatched = await bcrypt.compare(password, user.password);
       if (hasPasswordMatched) {
-        const token = jwt.sign({ userId: user._id }, '123', { expiresIn: '1h' });
+        const token = jwt.sign({ userId: user._id }, "123", {
+          expiresIn: "1h",
+        });
         res.json({
           message: "You have Logged In successfully",
           status: true,
           token: token,
-          name: user.firstName
+          name: user.firstName,
         });
       } else {
         res.json({
           message: "Incorrect Password",
-          status: false
+          status: false,
         });
       }
     } else {

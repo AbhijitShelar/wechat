@@ -18,7 +18,7 @@ const Dashboard = () => {
     // Set up the 'recieve' event listener only once
     const handleReceive = (data) => {
       console.log("Received message:", data);
-      append(`${data.message.name}: ${data.message.message}`, 'left');
+      append(`${data.message.name}: ${data.message.message}`, "left");
     };
 
     socket.on("recieve", handleReceive);
@@ -47,7 +47,12 @@ const Dashboard = () => {
     messageElement.classList.add(position);
     chatContainer.append(messageElement);
   };
-  
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleClick();
+    }
+  };
 
   const handleClick = () => {
     socket.emit("send", { message: chatText, name: nameHeader });
@@ -60,10 +65,13 @@ const Dashboard = () => {
       <div className="users-list"></div>
       <div className="chat-dashboard">
         <div className="user-name-header">{nameHeader}</div>
-        <div className="chat-area">
-          {/* Messages will be displayed here */}
-        </div>
-        <textarea className="chat-send-box" value={chatText} onChange={handleChange}></textarea>
+        <div className="chat-area">{/* Messages will be displayed here */}</div>
+        <textarea
+          className="chat-send-box"
+          value={chatText}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+        ></textarea>
         <Button className="send-btn" onClick={handleClick} />
       </div>
     </div>
