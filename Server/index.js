@@ -24,7 +24,7 @@ const io = initializeSocket(server);
 app.get("/", (req, res) => {
   res.json({ message: "server" });
 });
-
+//Creating database using mongoose(odm)
 const userInfo = mongoose.model("userInfo", {
   firstName: String,
   lastName: String,
@@ -34,6 +34,7 @@ const userInfo = mongoose.model("userInfo", {
   age: Number,
 });
 
+//Signup Api
 app.post("/api/signup", async (req, res) => {
   try {
     const { firstName, lastName, email, password, mobile, age } = req.body;
@@ -58,7 +59,7 @@ app.post("/api/signup", async (req, res) => {
     });
   }
 });
-
+//Api to validate Token
 app.post("/api/validateToken", (req, res) => {
   const { token } = req.body;
 
@@ -70,6 +71,7 @@ app.post("/api/validateToken", (req, res) => {
   }
 });
 
+//Login Api And validation
 app.post("/api/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -99,6 +101,16 @@ app.post("/api/login", async (req, res) => {
         status: false,
       });
     }
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+//To get all Users List
+app.get("/api/userslist", async (req, res) => {
+  try {
+    const usersList = await userInfo.find();
+    res.json(usersList);
   } catch (error) {
     console.log(error);
   }
