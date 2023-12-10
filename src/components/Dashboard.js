@@ -1,6 +1,6 @@
 // Dashboard.js
 
-import React, { useEffect, useState ,useCallback} from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useMyContext } from "../context/ChatContext";
 import { useNavigate } from "react-router-dom";
 import "./styles/Dashboard.css";
@@ -10,25 +10,60 @@ import axios from "axios";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { isAuthenticated ,currentChatHeader,setCurrentChatHeader} = useMyContext();
+  const { isAuthenticated, currentChatHeader, setCurrentChatHeader } =
+    useMyContext();
   const [chatText, setChatText] = useState("");
   const nameHeader = sessionStorage.getItem("name");
-  const socket = io("http://localhost:3000");
+  const [socket, setSocket] = useState(null);
   const [userList, setUserList] = useState([]);
+
   useEffect(() => {
-    // Set up the 'recieve' event listener only once
+    console.log("Dashboard component mounted");
+
+    const newSocket = io("http://localhost:3000");
+
+    newSocket.on("connect", () => {
+      console.log("Connected to server");
+
+      const userData = {
+        userId: sessionStorage.getItem("userId"),
+      };
+
+      console.log("Emitting 'user-joined' event with data:", userData);
+      newSocket.emit("user-joined", userData);
+    });
+
+    newSocket.on("disconnect", () => {
+      console.log("Disconnected from server");
+    });
+
+    setSocket(newSocket);
+
+    return () => {
+      console.log("Cleaning up Dashboard component");
+      newSocket.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    // Make sure socket is available before using it
+    if (!socket) {
+      return;
+    }
+
     const handleReceive = (data) => {
       console.log("Received message:", data);
-      append(`${data.message.name}: ${data.message.message}`, "left");
+      append(`${data.name}: ${data.message}`, "left");
     };
 
-    socket.on("recieve", handleReceive);
+    // Set up the 'receive' event listener
+    socket.on("receive", handleReceive);
 
     // Clean up the event listener when the component unmounts
     return () => {
-      socket.off("recieve", handleReceive);
+      socket.off("receive", handleReceive);
     };
-  }, [socket]); // Depend on the socket to prevent multiple listeners
+  }, [socket]);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -42,11 +77,12 @@ const Dashboard = () => {
         const response = await axios.get("http://localhost:3000/api/userslist");
         console.log(response.data);
 
-        // Assuming response.data is an array of user objects
-        const names = response.data.map((user) => user.firstName + ' ' + user.lastName);
+        // Assuming response.data is an array of user object
+        const names = response.data.map(
+          (user) => user.firstName + " " + user.lastName
+        );
 
         setUserList(names);
-        console.log(userList);
       } catch (error) {
         console.error("Error fetching users list:", error);
       }
@@ -75,14 +111,21 @@ const Dashboard = () => {
   };
 
   const handleClick = () => {
-    socket.emit("send", { message: chatText, name: nameHeader });
+    console.log("sending message");
+    socket.emit("send", {
+      message: chatText,
+      name: nameHeader,
+      to: sessionStorage.getItem("userId"),
+    });
     append(`You: ${chatText}`, "right");
     setChatText("");
   };
-  const handleUserClick = useCallback((name) => {
-    setCurrentChatHeader(name);
-  }, [setCurrentChatHeader]);
-
+  const handleUserClick = useCallback(
+    (name) => {
+      setCurrentChatHeader(name);
+    },
+    [setCurrentChatHeader]
+  );
 
   return (
     <div className="container">

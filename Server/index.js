@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
-const socketIO = require("socket.io");
+
 const mongoose = require("mongoose");
 const http = require("http"); // Import http module
 
@@ -14,7 +14,13 @@ dotenv.config();
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cors());
+
+app.use(
+  cors({
+    origin: "http://localhost:3001",
+    methods: ["GET", "POST"],
+  })
+);
 
 const server = http.createServer(app); // Create an HTTP server
 
@@ -88,6 +94,7 @@ app.post("/api/login", async (req, res) => {
           status: true,
           token: token,
           name: user.firstName,
+          userId: user._id.toString(),
         });
       } else {
         res.json({

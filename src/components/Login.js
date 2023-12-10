@@ -4,8 +4,6 @@ import { useMyContext } from "../context/ChatContext";
 import "./styles/Login.css";
 import axios from "axios";
 
-// ... (other imports)
-
 const Login = ({ onClose }) => {
   const navigate = useNavigate();
   const { setIsAuthenticated } = useMyContext();
@@ -45,12 +43,14 @@ const Login = ({ onClose }) => {
         formData
       );
 
-      const { status, token,name } = response.data;
+      const { status, token, name, userId } = response.data;
 
       if (status) {
         setIsAuthenticated(true);
         sessionStorage.setItem("token", token); // Use sessionStorage
-        sessionStorage.setItem("name",name);
+        sessionStorage.setItem("name", name);
+        sessionStorage.setItem("userId", userId.toString());
+
         navigate("/dashboard");
       } else {
         setIsAuthenticated(false);
