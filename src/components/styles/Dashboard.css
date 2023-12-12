@@ -99,4 +99,17 @@
   border: 1px solid black;
   border-radius: 25px;
   cursor: pointer;
+  background-color: rgb(151, 219, 219);
+}
+.active-users{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1rem;
+  width: 18vw;
+  height: 5vh;
+  border: 1px solid black;
+  border-radius: 25px;
+  cursor: pointer;
+  background-color: rgb(65, 132, 65);
 }

@@ -6,17 +6,21 @@ import { useNavigate } from "react-router-dom";
 import "./styles/Dashboard.css";
 import { Button } from "react-bootstrap";
 import io from "socket.io-client";
-import axios from "axios";
+import { appendMessage } from "./utils";
+import { fetchUsersList } from "./api";
+// Dashboard.js
+
+// ... (existing imports)
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, currentChatHeader, setCurrentChatHeader } =
-    useMyContext();
+  const { isAuthenticated, currentChatHeader, setCurrentChatHeader } = useMyContext();
   const [chatText, setChatText] = useState("");
   const nameHeader = sessionStorage.getItem("name");
   const [socket, setSocket] = useState(null);
   const [userList, setUserList] = useState([]);
-
+  const [rec, setRec] = useState(null);
+ 
   useEffect(() => {
     console.log("Dashboard component mounted");
 
@@ -27,8 +31,9 @@ const Dashboard = () => {
 
       const userData = {
         userId: sessionStorage.getItem("userId"),
+        name: sessionStorage.getItem("name"),
       };
-
+      
       console.log("Emitting 'user-joined' event with data:", userData);
       newSocket.emit("user-joined", userData);
     });
@@ -41,6 +46,8 @@ const Dashboard = () => {
 
     return () => {
       console.log("Cleaning up Dashboard component");
+      
+
       newSocket.disconnect();
     };
   }, []);
@@ -53,7 +60,7 @@ const Dashboard = () => {
 
     const handleReceive = (data) => {
       console.log("Received message:", data);
-      append(`${data.name}: ${data.message}`, "left");
+      appendMessage(`${data.name}: ${data.message}`, "left");
     };
 
     // Set up the 'receive' event listener
@@ -72,37 +79,14 @@ const Dashboard = () => {
   }, [isAuthenticated, navigate]);
 
   useEffect(() => {
-    const fetchUsersList = async () => {
-      try {
-        const response = await axios.get("http://localhost:3000/api/userslist");
-        console.log(response.data);
-
-        // Assuming response.data is an array of user object
-        const names = response.data.map(
-          (user) => user.firstName + " " + user.lastName
-        );
-
-        setUserList(names);
-      } catch (error) {
-        console.error("Error fetching users list:", error);
-      }
-    };
-
-    fetchUsersList();
+    fetchUsersList().then((usersList) => setUserList(usersList));
   }, []);
 
+  
   const handleChange = (e) => {
     setChatText(e.target.value);
   };
 
-  const append = (message, position) => {
-    const chatContainer = document.querySelector(".chat-area");
-    const messageElement = document.createElement("div");
-    messageElement.textContent = message; // Use textContent to set the text
-    messageElement.classList.add("message");
-    messageElement.classList.add(position);
-    chatContainer.append(messageElement);
-  };
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -115,43 +99,55 @@ const Dashboard = () => {
     socket.emit("send", {
       message: chatText,
       name: nameHeader,
-      to: sessionStorage.getItem("userId"),
+      to: rec,
     });
-    append(`You: ${chatText}`, "right");
+    appendMessage(`You: ${chatText}`, "right");
     setChatText("");
   };
+
   const handleUserClick = useCallback(
-    (name) => {
+    (name, recieverId) => {
       setCurrentChatHeader(name);
+      setRec(recieverId);
+      console.log("users list", userList);
     },
-    [setCurrentChatHeader]
+    [setCurrentChatHeader, userList]
   );
 
   return (
     <div className="container">
-      <div className="users-list">
-        {userList.map((name, index) => (
-          <div
-            key={index}
-            className="user-header"
-            onClick={() => handleUserClick(name)}
-          >
-            {name}
+      {isAuthenticated ? (
+        <>
+          <div className="users-list">
+            <div className="active-users"> Active Users</div>
+            {userList.map((user) => (
+              <div
+                key={user.recieverId}
+                className="user-header"
+                onClick={() => handleUserClick(user.name, user.recieverId)}
+              >
+                {user.name}
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
 
-      <div className="chat-dashboard">
-        <div className="user-name-header">{currentChatHeader}</div>
-        <div className="chat-area">{/* Messages will be displayed here */}</div>
-        <textarea
-          className="chat-send-box"
-          value={chatText}
-          onChange={handleChange}
-          onKeyDown={handleKeyDown}
-        ></textarea>
-        <Button className="send-btn" onClick={handleClick} />
-      </div>
+          <div className="chat-dashboard">
+            <div className="user-name-header">{currentChatHeader}</div>
+            <div className="chat-area">
+              {/* Messages will be displayed here */}
+            </div>
+            <textarea
+              className="chat-send-box"
+              value={chatText}
+              onChange={handleChange}
+              onKeyDown={handleKeyDown}
+            ></textarea>
+            <Button className="send-btn" onClick={handleClick} />
+          </div>
+        </>
+      ) : (
+        <p>Please log in to view the dashboard.</p>
+      )}
     </div>
   );
 };

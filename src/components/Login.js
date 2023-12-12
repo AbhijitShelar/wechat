@@ -50,6 +50,7 @@ const Login = ({ onClose }) => {
         sessionStorage.setItem("token", token); // Use sessionStorage
         sessionStorage.setItem("name", name);
         sessionStorage.setItem("userId", userId.toString());
+        sessionStorage.setItem('flag',true)
 
         navigate("/dashboard");
       } else {

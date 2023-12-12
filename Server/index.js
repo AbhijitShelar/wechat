@@ -8,7 +8,7 @@ const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const http = require("http"); // Import http module
 
-const initializeSocket = require("./socket");
+const {initializeSocket,User} = require("./socket");
 dotenv.config();
 
 const app = express();
@@ -116,8 +116,9 @@ app.post("/api/login", async (req, res) => {
 //To get all Users List
 app.get("/api/userslist", async (req, res) => {
   try {
-    const usersList = await userInfo.find();
+    const usersList = await User.find();
     res.json(usersList);
+   
   } catch (error) {
     console.log(error);
   }
