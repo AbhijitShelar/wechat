@@ -12,16 +12,17 @@ mongoose
 
 const User = new mongoose.model("User", {
   userId: String,
+  name:String,
   socketId: String,
 });
 
 const handleUserJoined = async (io, socket, userData) => {
   try {
-    const { userId } = userData;
+    const { userId ,name} = userData;
     let user = await User.findOne({ userId });
 
     if (!user) {
-      user = new User({ userId, socketId: socket.id });
+      user = new User({ userId,name, socketId: socket.id });
       await user.save();
     } else {
       user.socketId = socket.id;
