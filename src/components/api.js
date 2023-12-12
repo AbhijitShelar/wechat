@@ -10,7 +10,7 @@ export const fetchUsersList = async () => {
     
    
     const transformedData = response.data
-      .filter(user => user.userId !== myId)  // Filtered out the record with the specified ID
+      .filter(user => user.userId !== myId  && user.socketId !== null)  // Filtered out the record with the specified ID
       .map(({ userId, name}) => ({
         name: name,
         recieverId: userId,

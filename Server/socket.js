@@ -15,12 +15,13 @@ const User = new mongoose.model("User", {
   name:String,
   socketId: String,
 });
+const activeUsers = [];
+
 
 const handleUserJoined = async (io, socket, userData) => {
   try {
     const { userId ,name} = userData;
     let user = await User.findOne({ userId });
-
     if (!user) {
       user = new User({ userId,name, socketId: socket.id });
       await user.save();
@@ -60,13 +61,21 @@ const handleSendMessage = async (io, socket, data) => {
 };
 
 const handleDisconnect = async (io, socket) => {
-  try{
+  try {
+    const user = await User.findOne({ socketId: socket.id });
 
-    console.log("User disconnected");
+    if (user) {
+      user.socketId = null;
+      await user.save();
+      console.log(`User disconnected: ${user.userId}`);
+    } else {
+      console.log("User not found in the database");
+    }
   } catch (error) {
     console.error("Error handling disconnect event:", error);
   }
 };
+
 
 const initializeSocket = (server) => {
   const io = socketIO(server, {
@@ -78,6 +87,7 @@ const initializeSocket = (server) => {
 
   io.on("connection", (socket) => {
     console.log("A user connected");
+
     socket.on("connect", () => {
       console.log("User connected:", socket.id);
     });
