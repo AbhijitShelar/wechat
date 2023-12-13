@@ -1,30 +1,40 @@
 .container {
- 
   display: flex;
   flex-direction: column;
   align-items: center;
-  
-  
+  justify-content: center; /* Center content vertically */
+  height: 100vh;
+  width: 100vw;
+  background: url("/public/logos/wechat.jpg");
+  background-size: cover;
+  background-position: center;
+
 }
-.login-btn {
-  width: 8rem;
-  height: 3.5rem;
-  border: 2px solid black;
-  border-radius: 15px;
-  background-color: rgb(98, 91, 195);
-  cursor: pointer;
-  font-size: larger;
-  color: azure;
-}
+
+.login-btn,
 .signup-btn {
   width: 8rem;
   height: 3.5rem;
-  border: 2px solid black;
+  border: 2px solid transparent;
   border-radius: 15px;
-  background-color: rgb(29, 210, 111);
-  color: azure;
-
-  margin-left: 1rem;
   cursor: pointer;
   font-size: larger;
+  font-weight: bolder;
+  color: white;
+  transition: all 0.3s ease;
+  margin-bottom: 1rem; /* Add margin for spacing between buttons */
+}
+
+.login-btn {
+  background-color: rgb(98, 91, 195);
+}
+
+.signup-btn {
+  background-color: rgb(29, 210, 111);
+}
+
+.login-btn:hover,
+.signup-btn:hover {
+  border: 2px solid white;
+  background-color: black;
 }

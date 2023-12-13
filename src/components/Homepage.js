@@ -28,6 +28,7 @@ const Homepage = () => {
   }
 
   return (
+    <>
     <div className='container'>
       <h1>Welcome to WeChat</h1>
       <div className="buttons">
@@ -43,6 +44,7 @@ const Homepage = () => {
       {showLogin && <Login onClose={handleCloseLogin} />}
       {showSignup && <Signup onClose={handleCloseSignup}/>}
     </div>
+    </>
   );
 };
 
