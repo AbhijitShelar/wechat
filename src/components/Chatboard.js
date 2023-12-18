@@ -3,6 +3,7 @@
 import React from "react";
 import { Button } from "react-bootstrap";
 import { appendMessage } from "./utils";
+
 const Chatboard = ({
   chatText,
   setChatText,
@@ -10,8 +11,8 @@ const Chatboard = ({
   rec,
   socket,
   currentChatHeader,
+  messages,
 }) => {
-    
   const handleChange = (e) => {
     setChatText(e.target.value);
   };
@@ -37,7 +38,19 @@ const Chatboard = ({
   return (
     <div className="chat-dashboard">
       <div className="user-name-header">{currentChatHeader}</div>
-      <div className="chat-area">{/* Messages will be displayed here */}</div>
+      <div className="chat-area">
+        {messages
+          .filter((message) => {
+            // Filter messages based on the currentChatHeader
+            const messageSender = message.split(":")[0].trim();
+            return messageSender === currentChatHeader;
+          })
+          .map((message, index) => (
+            <div className="message left" key={index}>
+              {message}
+            </div>
+          ))}
+      </div>
       <textarea
         className="chat-send-box"
         value={chatText}

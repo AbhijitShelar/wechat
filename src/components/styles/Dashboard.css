@@ -1,3 +1,5 @@
+
+
 .dashboard-container {
   display: flex;
   flex-direction: column;
@@ -6,72 +8,74 @@
   height: 100vh;
   margin-top: 0rem;
   padding: 0%;
-  background-color: #f5f5f5; /* Light grey background */
+  background-color: #f5f5f5;
 }
 
 .users-list {
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 1px solid #ccc; /* Light grey border */
+  border: 1px solid #ccc;
   margin: 0%;
   width: 25vw;
   height: 100vh;
   overflow-y: auto;
-  background-color: #f0f8ff; /* AliceBlue background for user list */
-  border-radius: 15px; /* Rounded corners */
+  background-color: #f0f8ff;
+  border-radius: 15px;
 }
 
 .chat-dashboard {
   display: flex;
   flex-direction: column;
-  border: 1px solid #ccc; /* Light grey border */
+  border: 1px solid #ccc;
   margin: 0%;
   width: 75vw;
   height: 100vh;
-  background-color: #f0f0f0; /* Light grey background for chat area */
-  border-radius: 15px; /* Rounded corners */
+  background-color: #f0f0f0;
+  border-radius: 15px;
 }
 
 .user-name-header {
   display: flex;
-  border: 1px solid #008080; /* Teal color for border */
+  border: 1px solid #008080;
   height: 5vh;
-  border-radius: 15px; /* Rounded corners */
+  border-radius: 15px;
   margin: 0.5rem 0.5rem 0.5rem 0.5rem;
   justify-content: center;
   align-items: center;
-  background-color: #008080; /* Teal color for user name header */
-  color: #fff; /* White text color */
+  background-color: #008080;
+  color: #fff;
+  text-transform: capitalize;
+
 }
 
 .chat-area {
   display: flex;
   flex-direction: column;
-  border: 1px solid #ccc; /* Light grey border */
+  border: 1px solid #ccc;
   height: 83vh;
-  border-radius: 15px; /* Rounded corners */
+  border-radius: 15px;
   margin: 0rem 0.5rem 0.5rem 0.5rem;
   overflow-y: auto;
   padding: 0.2rem 0.2rem 0.2rem 0.2rem;
-  background-color: #e0e0e0; /* Light grey background for chat messages */
+  background-color: #e0e0e0;
 }
 
 .chat-send-box {
   display: flex;
   position: fixed;
   bottom: 0%;
-  border: 1px solid #ccc; /* Light grey border */
+  border: 1px solid #ccc;
   height: 7vh;
   width: 72.5vw;
-  border-radius: 15px; /* Rounded corners */
+  border-radius: 15px;
   margin: 2rem 0.5rem 0.5rem 0.5rem;
   padding-left: 0.7rem;
   padding-top: 0.3rem;
   padding-right: 0%;
   padding-bottom: 0%;
   font-size: large;
-  background-color: #fff; /* White background for chat input box */
+  background-color: #fff;
 }
 
 .send-btn {
@@ -85,15 +89,15 @@
   width: 3rem;
   height: 3.5rem;
   border-radius: 50%;
-  border: none; /* Remove border */
+  border: none;
 }
 
 .message {
   display: flex;
-  background-color: #b0c4de; /* LightSteelBlue background for messages */
+  background-color: #b0c4de;
   width: 24%;
   padding: 10px;
-  border: 1px solid #ccc; /* Light grey border */
+  border: 1px solid #ccc;
   border-radius: 10px;
   margin: 1rem;
 }
@@ -119,10 +123,15 @@
   margin: 1rem;
   width: 18vw;
   height: 5vh;
-  border: 1px solid #ccc; /* Light grey border */
-  border-radius: 15px; /* Rounded corners */
+  border: 1px solid #ccc;
+  border-radius: 15px;
   cursor: pointer;
-  background-color: #87ceeb; /* SkyBlue background for user headers */
+  background-color: #87ceeb;
+  text-transform: capitalize;
+}
+
+.user-header:hover {
+  background-color: #0056b3;
 }
 
 .active-users {
@@ -132,19 +141,129 @@
   margin: 1rem;
   width: 18vw;
   height: 5vh;
-  border: 1px solid #ccc; /* Light grey border */
-  border-radius: 15px; /* Rounded corners */
+  border: 1px solid #ccc;
+  border-radius: 15px;
   cursor: none;
-  background-color: #90ee90; /* LightGreen background for active users */
+  background-color: #90ee90;
 }
 
 .no-active-users {
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid #ccc; /* Light grey border */
   margin: 0%;
   width: 75vw;
   height: 100vh;
-  background-color: #fff; /* White background for no active users */
+  background-color: #fff;
+  background: url("/public/logos/chatbg.jpeg");
+}
+
+.account-tab-button {
+  position: fixed;
+  bottom: 1rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18vw;
+  height: 6vh;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  cursor: pointer;
+  background-color: #87ebd2;
+  color: #090909;
+}
+
+.account-tab {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 25vw;
+  padding: 10px;
+  background-color: #74afd7;
+  color: #0c0b0b;
+  border-radius: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tab {
+  border: 2px solid #336699;
+  border-radius: 15px;
+  text-align: center;
+  padding: 15px;
+  background-color: #b0c4de;
+  color: #336699;
+  font-size: larger;
+  font-weight: bold;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+  cursor: none;
+}
+
+.tab:hover {
+  transform: scale(1.05);
+}
+
+
+.close-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 28px;
+}
+
+.close-button:hover {
+  color: #ff5555;
+}
+
+.account-tab :hover {
+  background-color: #555;
+  color: white;
+}
+
+.account-tab-button:hover {
+  background-color: #0056b3;
+}
+
+.logout-btn {
+  border: 1px solid #ccc;
+  background-color: #ff6666;
+  color: #fff;
+  padding: 10px;
+  border-radius: 15px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  margin-top: 10px;
+  transition: background-color 0.3s ease; 
+}
+
+.logout-btn:hover {
+  background-color: #cc0000;
+}
+
+.welcome-tab {
+  border: 2px solid rgba(51, 102, 153, 0.5);
+  border-radius: 15px;
+  background-color: rgba(204, 229, 255, 0.7);
+  font-size: larger;
+  padding: 15px;
+  font-weight: bolder;
+  color: #336699;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+  cursor: none;
+  text-transform: capitalize;
+}
+
+.welcome-tab:hover {
+  transform: scale(1.05);
 }

@@ -15,13 +15,20 @@ const User = new mongoose.model("User", {
   name:String,
   socketId: String,
 });
-const activeUsers = [];
+
+const ChatHistory=new mongoose.model("chathistory",{
+  senderId:String,
+  recipientId:String,
+  message:String,
+  
+});
 
 
 const handleUserJoined = async (io, socket, userData) => {
   try {
     const { userId ,name} = userData;
     let user = await User.findOne({ userId });
+    console.log("User joined",name)
     if (!user) {
       user = new User({ userId,name, socketId: socket.id });
       await user.save();
@@ -48,10 +55,13 @@ const handleSendMessage = async (io, socket, data) => {
 
   try {
     const recipient = await User.findOne({ userId: to });
+    const sender=await User.findOne({socketId:socket.id});
+    let chathistory=new ChatHistory({senderId:sender.userId,recipientId:recipient.userId,message})
+    await chathistory.save();
     console.log("hlo", recipient);
 
     if (recipient && recipient.socketId) {
-      io.to(recipient.socketId).emit("receive", { message, name });
+      io.to(recipient.socketId).emit("receive", { message, name,to});
     } else {
       console.log("Invalid user or user not online");
     }
