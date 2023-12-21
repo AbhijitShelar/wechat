@@ -1,4 +1,3 @@
-// Dashboard.js
 
 import React, { useEffect, useState, useCallback } from "react";
 import { useMyContext } from "../context/ChatContext";
@@ -43,6 +42,7 @@ const Dashboard = () => {
     });
 
     newSocket.on("disconnect", () => {
+      
       console.log("Disconnected from server");
     });
 
@@ -50,6 +50,7 @@ const Dashboard = () => {
 
     return () => {
       console.log("Cleaning up Dashboard component");
+   
       newSocket.disconnect();
     };
   }, []);
@@ -90,14 +91,31 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (!isAuthenticated) {
+      alert("Please Login First")
       navigate("/");
     }
   }, [isAuthenticated, navigate]);
 
-  useEffect(() => {
-    fetchUsersList().then((usersList) => setUserList(usersList));
-  }, []);
+  // useEffect(() => {
+   
+  //   fetchUsersList().then((usersList) => setUserList(usersList));
+  // }, []);
 
+  useEffect(() => {
+    if (socket) {
+      socket.on("updateList", () => {
+        fetchUsersList().then((usersList) => setUserList(usersList));
+      });
+    }
+  
+    // Cleanup
+    return () => {
+      if (socket) {
+        socket.off("updateList");
+      }
+    };
+  }, [socket]);
+  
   const handleUserClick = useCallback(
     (name, recieverId) => {
       setCurrentChatHeader(name);
@@ -154,8 +172,6 @@ const Dashboard = () => {
 )}
           </div>
 
-          
-
           {click ? (
             <Chatboard
               chatText={chatText}
@@ -171,7 +187,7 @@ const Dashboard = () => {
           )}
         </>
       ) : (
-        <p>Please log in to view the dashboard.</p>
+        <h1 >Please log in to view the dashboard.</h1>
       )}
     </div>
   );

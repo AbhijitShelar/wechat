@@ -38,6 +38,7 @@ const handleUserJoined = async (io, socket, userData) => {
     }
 
     io.emit("user-joined", userData);
+    io.emit("updateList")
   } catch (error) {
     if (error.name === 'DocumentNotFoundError') {
       // Handle the case where the document is not found

@@ -2,13 +2,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center; /* Center content vertically */
+  justify-content: center;
   height: 100vh;
   width: 100vw;
   background: url("/public/logos/wechat.jpg");
   background-size: cover;
   background-position: center;
-
 }
 
 .login-btn,
@@ -22,7 +21,7 @@
   font-weight: bolder;
   color: white;
   transition: all 0.3s ease;
-  margin-bottom: 1rem; /* Add margin for spacing between buttons */
+  margin-bottom: 1rem; 
 }
 
 .login-btn {

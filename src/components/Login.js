@@ -53,10 +53,13 @@ const Login = ({ onClose }) => {
         sessionStorage.setItem('flag',true)
 
         navigate("/dashboard");
+        setShowPopup(false);
       } else {
+        alert('Enter Valid Credentials')
         setIsAuthenticated(false);
+        setShowPopup(true);
       }
-      setShowPopup(false);
+      
     } catch (error) {
       console.log(error);
       console.log("Here is an error");

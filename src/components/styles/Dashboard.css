@@ -154,8 +154,10 @@
   margin: 0%;
   width: 75vw;
   height: 100vh;
-  background-color: #fff;
-  background: url("/public/logos/chatbg.jpeg");
+  background-color: #ccbdbd;
+  background: url("/public/logos/chat.png") ;
+  background-size: cover;
+  background-position: center;
 }
 
 .account-tab-button {
@@ -233,7 +235,7 @@
 .logout-btn {
   border: 1px solid #ccc;
   background-color: #ff6666;
-  color: #fff;
+  color: #050404;
   padding: 10px;
   border-radius: 15px;
   cursor: pointer;

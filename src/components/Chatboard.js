@@ -1,6 +1,7 @@
 // Chatboard.js
 
 import React from "react";
+// import { useState } from "react";
 import { Button } from "react-bootstrap";
 import { appendMessage } from "./utils";
 
@@ -13,6 +14,7 @@ const Chatboard = ({
   currentChatHeader,
   messages,
 }) => {
+  // const[youMessage,setYouMessage]=useState([]);
   const handleChange = (e) => {
     setChatText(e.target.value);
   };
