@@ -62,26 +62,35 @@ const Dashboard = () => {
 
     const handleReceive = (data) => {
       console.log("Received message:", data);
-      console.log("To:", data.to);
-      console.log("Current user ID:", sessionStorage.getItem("userId"));
-      console.log("Sender name:", data.name);
+      console.log("messageRecipientId:", data.messageRecipientId);
+      console.log("Message Recipient name",data.messageRecipientName)
+      console.log("Sender Id:", data.messageSenderId);
+      console.log("Sender name:", data.messageSenderName);
       console.log("Current user name:", nameHeader);
 
-      console.log("Received message:", data);
+  
       if (
-        data.to === sessionStorage.getItem("userId") &&
-        data.name !== nameHeader
+        data.messageRecipientId === sessionStorage.getItem("userId") &&
+        data.messageSenderName !== nameHeader
       ) {
         // appendMessage(`${data.name}: ${data.message}`, "left");
 
         setMessages((prevMessages) => {
-          const newMessages = [
-            ...prevMessages,
-            `${data.name}: ${data.message}`,
-          ];
-          console.log(newMessages);
+          const newMessage = {
+            message: data.message,
+            messageSenderName: data.messageSenderName,
+            messageSenderId: data.messageSenderId,
+            messageRecipientId: data.messageRecipientId,
+            messageRecipientName: data.messageRecipientName,
+            attach: data.attach,
+            timestamp:data.timestamp,
+          };
+        
+          const newMessages = [...prevMessages, newMessage];
+        
           return newMessages;
         });
+        
       }
     };
 
@@ -184,6 +193,7 @@ const Dashboard = () => {
               socket={socket}
               currentChatHeader={currentChatHeader}
               messages={messages}
+            
             />
           ) : (
             <section className="no-active-users">

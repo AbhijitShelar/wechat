@@ -52,17 +52,16 @@ const handleUserJoined = async (io, socket, userData) => {
 const handleSendMessage = async (io, socket, data) => {
   console.log("Server received a message:", data);
 
-  const { message, name, to } = data;
+  const { message, messageSenderName, messageSenderId, messageRecipientId ,messageRecipientName,attach,timestamp} = data;
 
   try {
-    const recipient = await User.findOne({ userId: to });
-    const sender=await User.findOne({socketId:socket.id});
-    let chathistory=new ChatHistory({senderId:sender.userId,recipientId:recipient.userId,message})
+    const recipient = await User.findOne({ userId: messageRecipientId });
+    let chathistory=new ChatHistory({senderId:messageSenderId,recipientId:recipient.userId,message})
     await chathistory.save();
     console.log("hlo", recipient);
 
     if (recipient && recipient.socketId) {
-      io.to(recipient.socketId).emit("receive", { message, name,to});
+      io.to(recipient.socketId).emit("receive", { message, messageSenderName ,messageSenderId, messageRecipientId,messageRecipientName,attach,timestamp});
     } else {
       console.log("Invalid user or user not online");
     }

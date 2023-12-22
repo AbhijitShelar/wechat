@@ -14,6 +14,11 @@ const Chatboard = ({
   messages,
 }) => {
   const [myMessages, setMyMessages] = useState([]);
+  const allMessages = [...messages, ...myMessages];
+  allMessages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+
+
   const handleChange = (e) => {
     setChatText(e.target.value);
   };
@@ -29,16 +34,26 @@ const Chatboard = ({
     console.log("sending message");
     socket.emit("send", {
       message: chatText,
-      name: nameHeader,
-      to: rec,
+      messageSenderName: nameHeader,
+      messageSenderId: sessionStorage.getItem("userId"),
+      messageRecipientId: rec,
+      messageRecipientName: currentChatHeader,
+      attach:'left',
+      timestamp: new Date().toISOString()
+      
     });
     // appendMessage(`You : ${chatText}`, "right");
     setMyMessages((prevMessages) => [
       ...prevMessages,
       {
-        sender: "You",
+        messageSenderName: nameHeader,
         message: chatText,
-        receiver: currentChatHeader,
+        messageRecipientName: currentChatHeader,
+        messageRecipientId: rec,
+        messageSenderId: sessionStorage.getItem("userId"),
+        attach:'right',
+        timestamp: new Date().toISOString()
+
       },
     ]);
     setChatText("");
@@ -48,24 +63,18 @@ const Chatboard = ({
     <div className="chat-dashboard">
       <div className="user-name-header">{currentChatHeader}</div>
       <div className="chat-area">
-        {messages
-          .filter((message) => {
-            // Filter messages based on the currentChatHeader
-            const messageSender = message.split(":")[0].trim();
-            return messageSender === currentChatHeader;
-          })
-          .map((message, index) => (
-            <div className="message left" key={index}>
-              {message}
-            </div>
-          ))}
-          {myMessages
-          .filter((myMessage) => myMessage.receiver === currentChatHeader)
-          .map((filteredMessage, index) => (
-            <div className="message right" key={index}>
-             {`${filteredMessage.sender} : ${filteredMessage.message}`}
-            </div>
-          ))}
+      {allMessages
+        .filter((message) => {
+          return (
+            (message.messageSenderName === currentChatHeader && message.attach === 'left') ||
+            (message.messageRecipientName === currentChatHeader && message.attach === 'right')
+          );
+        })
+        .map((filteredMessage, index) => (
+          <div className={`message ${filteredMessage.attach}`} key={index}>
+            {`${filteredMessage.messageSenderName === nameHeader ? 'You' : filteredMessage.messageSenderName} : ${filteredMessage.message}`}
+          </div>
+        ))}
      
       </div>
       <textarea
