@@ -38,7 +38,7 @@ const handleUserJoined = async (io, socket, userData) => {
     }
 
     io.emit("user-joined", userData);
-    io.emit("updateList")
+    io.emit("updateList");
   } catch (error) {
     if (error.name === 'DocumentNotFoundError') {
       // Handle the case where the document is not found
@@ -73,12 +73,15 @@ const handleSendMessage = async (io, socket, data) => {
 
 const handleDisconnect = async (io, socket) => {
   try {
+
     const user = await User.findOne({ socketId: socket.id });
 
     if (user) {
       user.socketId = null;
       await user.save();
       console.log(`User disconnected: ${user.userId}`);
+      io.emit("updateList")
+
     } else {
       console.log("User not found in the database");
     }

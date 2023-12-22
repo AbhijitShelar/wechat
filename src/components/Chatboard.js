@@ -1,9 +1,8 @@
 // Chatboard.js
 
-import React from "react";
-// import { useState } from "react";
+import React, { useState } from "react";
 import { Button } from "react-bootstrap";
-import { appendMessage } from "./utils";
+// import { appendMessage } from "./utils";
 
 const Chatboard = ({
   chatText,
@@ -14,7 +13,7 @@ const Chatboard = ({
   currentChatHeader,
   messages,
 }) => {
-  // const[youMessage,setYouMessage]=useState([]);
+  const [myMessages, setMyMessages] = useState([]);
   const handleChange = (e) => {
     setChatText(e.target.value);
   };
@@ -33,7 +32,15 @@ const Chatboard = ({
       name: nameHeader,
       to: rec,
     });
-    appendMessage(`You : ${chatText}`, "right");
+    // appendMessage(`You : ${chatText}`, "right");
+    setMyMessages((prevMessages) => [
+      ...prevMessages,
+      {
+        sender: "You",
+        message: chatText,
+        receiver: currentChatHeader,
+      },
+    ]);
     setChatText("");
   };
 
@@ -52,6 +59,14 @@ const Chatboard = ({
               {message}
             </div>
           ))}
+          {myMessages
+          .filter((myMessage) => myMessage.receiver === currentChatHeader)
+          .map((filteredMessage, index) => (
+            <div className="message right" key={index}>
+             {`${filteredMessage.sender} : ${filteredMessage.message}`}
+            </div>
+          ))}
+     
       </div>
       <textarea
         className="chat-send-box"

@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useCallback } from "react";
 import { useMyContext } from "../context/ChatContext";
 import { useNavigate } from "react-router-dom";
@@ -10,19 +9,21 @@ import { fetchUsersList } from "./api";
 import Chatboard from "./Chatboard";
 import { Button } from "react-bootstrap";
 
-
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, currentChatHeader, setCurrentChatHeader,setIsAuthenticated } =
-    useMyContext();
+  const {
+    isAuthenticated,
+    currentChatHeader,
+    setCurrentChatHeader,
+    setIsAuthenticated,
+  } = useMyContext();
   const [chatText, setChatText] = useState("");
   const nameHeader = sessionStorage.getItem("name");
   const [socket, setSocket] = useState(null);
   const [userList, setUserList] = useState([]);
   const [rec, setRec] = useState(null);
-  const [click,setClick]=useState(null);
+  const [click, setClick] = useState(null);
   const [messages, setMessages] = useState([]);
-
 
   useEffect(() => {
     console.log("Dashboard component mounted");
@@ -42,7 +43,6 @@ const Dashboard = () => {
     });
 
     newSocket.on("disconnect", () => {
-      
       console.log("Disconnected from server");
     });
 
@@ -50,7 +50,7 @@ const Dashboard = () => {
 
     return () => {
       console.log("Cleaning up Dashboard component");
-   
+
       newSocket.disconnect();
     };
   }, []);
@@ -62,22 +62,26 @@ const Dashboard = () => {
 
     const handleReceive = (data) => {
       console.log("Received message:", data);
-  console.log("To:", data.to);
-  console.log("Current user ID:", sessionStorage.getItem('userId'));
-  console.log("Sender name:", data.name);
-  console.log("Current user name:", nameHeader);
+      console.log("To:", data.to);
+      console.log("Current user ID:", sessionStorage.getItem("userId"));
+      console.log("Sender name:", data.name);
+      console.log("Current user name:", nameHeader);
 
       console.log("Received message:", data);
-      if (data.to === sessionStorage.getItem('userId') && data.name !== nameHeader   ) {
+      if (
+        data.to === sessionStorage.getItem("userId") &&
+        data.name !== nameHeader
+      ) {
         // appendMessage(`${data.name}: ${data.message}`, "left");
-        
+
         setMessages((prevMessages) => {
-          const newMessages = [...prevMessages, `${data.name}: ${data.message}`];
-          console.log(newMessages);  
+          const newMessages = [
+            ...prevMessages,
+            `${data.name}: ${data.message}`,
+          ];
+          console.log(newMessages);
           return newMessages;
         });
-      
-
       }
     };
 
@@ -86,18 +90,17 @@ const Dashboard = () => {
     return () => {
       socket.off("receive", handleReceive);
     };
-  }, [socket,rec,nameHeader]);
-
+  }, [socket, rec, nameHeader]);
 
   useEffect(() => {
     if (!isAuthenticated) {
-      alert("Please Login First")
       navigate("/");
+      alert("Please Login First");
     }
   }, [isAuthenticated, navigate]);
 
   // useEffect(() => {
-   
+
   //   fetchUsersList().then((usersList) => setUserList(usersList));
   // }, []);
 
@@ -107,7 +110,7 @@ const Dashboard = () => {
         fetchUsersList().then((usersList) => setUserList(usersList));
       });
     }
-  
+
     // Cleanup
     return () => {
       if (socket) {
@@ -115,7 +118,7 @@ const Dashboard = () => {
       }
     };
   }, [socket]);
-  
+
   const handleUserClick = useCallback(
     (name, recieverId) => {
       setCurrentChatHeader(name);
@@ -130,12 +133,10 @@ const Dashboard = () => {
   const toggleAccountTab = () => {
     setIsAccountTabOpen((prev) => !prev);
   };
-  const haandleLogout=()=>{
+  const handleLogout = () => {
     setIsAuthenticated(false);
-   sessionStorage.clear();
-
-  }
-
+    sessionStorage.clear();
+  };
 
   return (
     <div className="dashboard-container">
@@ -157,19 +158,21 @@ const Dashboard = () => {
               <h1>No active users available</h1>
             )}
             <div className="account-tab-button" onClick={toggleAccountTab}>
-          My Account
-          </div>
+              My Account
+            </div>
 
-          {isAccountTabOpen && (
-  <div className="account-tab">
-    <span className="close-button" onClick={toggleAccountTab}>
-      &times;
-    </span>
-    <p className="tab">Account Details</p>
-    <p className="tab">Name: {nameHeader}</p>
-    <Button className="logout-btn" onClick={haandleLogout}>Log Out</Button>
-  </div>
-)}
+            {isAccountTabOpen && (
+              <div className="account-tab">
+                <span className="close-button" onClick={toggleAccountTab}>
+                  &times;
+                </span>
+                <p className="tab">Account Details</p>
+                <p className="tab">Name: {nameHeader}</p>
+                <Button className="logout-btn" onClick={handleLogout}>
+                  Log Out
+                </Button>
+              </div>
+            )}
           </div>
 
           {click ? (
@@ -183,11 +186,13 @@ const Dashboard = () => {
               messages={messages}
             />
           ) : (
-            <section className="no-active-users"><p className="welcome-tab">{nameHeader}!! Welcome To WeChat</p></section>
+            <section className="no-active-users">
+              <p className="welcome-tab">{nameHeader}!! Welcome To WeChat</p>
+            </section>
           )}
         </>
       ) : (
-        <h1 >Please log in to view the dashboard.</h1>
+        <h1>Please log in to view the dashboard.</h1>
       )}
     </div>
   );
