@@ -31,6 +31,7 @@ const io = initializeSocket(server);
 app.get("/", (req, res) => {
   res.json({ message: "server" });
 });
+
 //Creating database using mongoose(odm)
 const userInfo = mongoose.model("userInfo", {
   firstName: String,
@@ -66,17 +67,37 @@ app.post("/api/signup", async (req, res) => {
     });
   }
 });
-//Api to validate Token
-app.post("/api/validateToken", (req, res) => {
-  const { token } = req.body;
 
-  if (!token) {
+const validateTokenMiddleware = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+
+  if (authHeader) {
+    const token = authHeader.split(" ")[1];
+    if (!token) {
+      return res.json({
+        status: false,
+        message: "Token not provided",
+      });
+    }
+
+    jwt.verify(token, "123", (err, decoded) => {
+      if (err) {
+        return res.json({
+          status: false,
+          message: "Invalid token",
+        });
+      }
+
+      req.user = decoded;
+      next();
+    });
+  } else {
     return res.json({
       status: false,
-      message: "Token not provided",
+      message: "No token Provided",
     });
   }
-});
+};
 
 //Login Api And validation
 app.post("/api/login", async (req, res) => {
@@ -115,7 +136,7 @@ app.post("/api/login", async (req, res) => {
 });
 
 //To get all Users List
-app.get("/api/userslist", async (req, res) => {
+app.get("/api/userslist", validateTokenMiddleware, async (req, res) => {
   try {
     const usersList = await User.find();
     res.json(usersList);

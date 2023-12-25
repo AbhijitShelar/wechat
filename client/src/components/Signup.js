@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import "./styles/Signup.css";
 import axios from "axios";
+import BASE_URL from "./config";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const Signup = ({ onClose }) => {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -18,15 +22,16 @@ const Signup = ({ onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/signup",
-        formData
-      );
-       
+      const response = await axios.post(`${BASE_URL}/api/signup`, formData);
+
       console.log(response.data.message);
     } catch (error) {
       console.error("Login error:", error.message);
     }
+    toast.success("Signed Up Succesfully", {
+      position: toast.POSITION.TOP_CENTER,
+      autoClose: 2000,
+    });
 
     onClose();
   };
@@ -100,7 +105,7 @@ const Signup = ({ onClose }) => {
               required
             />
           </label>
-          
+
           <button type="submit">Signup</button>
         </form>
       </div>

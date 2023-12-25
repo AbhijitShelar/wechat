@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useMyContext } from "../context/ChatContext";
 import "./styles/Login.css";
 import axios from "axios";
+import BASE_URL from "./config";
 
 const Login = ({ onClose }) => {
   const navigate = useNavigate();
@@ -21,6 +22,10 @@ const Login = ({ onClose }) => {
   useEffect(() => {
     const token = sessionStorage.getItem("token"); // Use sessionStorage
     if (token) {
+      toast.success("Logged In ", {
+        position: toast.POSITION.TOP_CENTER,
+        autoClose: 2000,
+      });
       setIsAuthenticated(true);
       navigate("/dashboard");
     }
@@ -38,10 +43,7 @@ const Login = ({ onClose }) => {
   const handleLogin = async (e) => {
     try {
       e.preventDefault();
-      const response = await axios.post(
-        "http://localhost:3000/api/login",
-        formData
-      );
+      const response = await axios.post(`${BASE_URL}/api/login`, formData);
 
       const { status, token, name, userId } = response.data;
 
@@ -50,16 +52,22 @@ const Login = ({ onClose }) => {
         sessionStorage.setItem("token", token); // Use sessionStorage
         sessionStorage.setItem("name", name);
         sessionStorage.setItem("userId", userId.toString());
-        sessionStorage.setItem('flag',true)
+        sessionStorage.setItem("flag", true);
 
         navigate("/dashboard");
+        toast.success("Logged In Succesfully", {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: 2000,
+        });
         setShowPopup(false);
       } else {
-        alert('Enter Valid Credentials')
+        toast.error("Invalid Credentials", {
+          position: toast.POSITION.TOP_CENTER,
+          autoClose: 2000,
+        });
         setIsAuthenticated(false);
         setShowPopup(true);
       }
-      
     } catch (error) {
       console.log(error);
       console.log("Here is an error");

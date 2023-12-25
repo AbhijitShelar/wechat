@@ -3,8 +3,10 @@ import { useMyContext } from "../context/ChatContext";
 import { useNavigate } from "react-router-dom";
 import "./styles/Dashboard.css";
 import io from "socket.io-client";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { fetchUsersList } from "./api";
-// import { appendMessage } from "./utils";
+import BASE_URL from "./config";
 
 import Chatboard from "./Chatboard";
 import { Button } from "react-bootstrap";
@@ -28,7 +30,7 @@ const Dashboard = () => {
   useEffect(() => {
     console.log("Dashboard component mounted");
 
-    const newSocket = io("http://localhost:3000");
+    const newSocket = io(`${BASE_URL}`);
 
     newSocket.on("connect", () => {
       console.log("Connected to server");
@@ -102,21 +104,19 @@ const Dashboard = () => {
   useEffect(() => {
     if (!isAuthenticated) {
       navigate("/");
-      alert("Please Login First");
-    }
+      toast.error("Please Login First", {
+        position: toast.POSITION.TOP_CENTER,
+        autoClose: 1000, // milliseconds until the toast closes automatically
+      });    }
   }, [isAuthenticated, navigate]);
-
- 
 
   useEffect(() => {
     if (socket) {
       socket.on("updateList", () => {
         fetchUsersList().then((usersList) => setUserList(usersList));
-        if(userList.length === 0)
-        {
+        if (userList.length === 0) {
           setClick(false);
         }
-
       });
     }
 
@@ -126,7 +126,7 @@ const Dashboard = () => {
         socket.off("updateList");
       }
     };
-  }, [socket,userList]);
+  }, [socket, userList]);
 
   const handleUserClick = useCallback(
     (name, recieverId) => {
@@ -143,6 +143,11 @@ const Dashboard = () => {
     setIsAccountTabOpen((prev) => !prev);
   };
   const handleLogout = () => {
+    toast.warning("Logged Out", {
+      position: toast.POSITION.TOP_CENTER,
+      autoClose: 2000,
+       // milliseconds until the toast closes automatically
+    });
     setIsAuthenticated(false);
     sessionStorage.clear();
   };
@@ -191,7 +196,7 @@ const Dashboard = () => {
             )}
           </div>
 
-          {click  ? (
+          {click ? (
             <Chatboard
               chatText={chatText}
               setChatText={setChatText}

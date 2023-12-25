@@ -2,7 +2,8 @@
 
 import React, { useState } from "react";
 import { Button } from "react-bootstrap";
-// import { appendMessage } from "./utils";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Chatboard = ({
   chatText,
@@ -31,6 +32,13 @@ const Chatboard = ({
   };
 
   const handleClick = () => {
+    if(chatText===""){
+      toast.error("Type a message", {
+        position: toast.POSITION.TOP_CENTER,
+        autoClose: 2000, // milliseconds until the toast closes automatically
+      });
+    }
+    else{
     console.log("sending message");
     socket.emit("send", {
       message: chatText,
@@ -57,6 +65,7 @@ const Chatboard = ({
       },
     ]);
     setChatText("");
+  }
   };
 
   return (

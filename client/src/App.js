@@ -3,11 +3,14 @@ import Dashboard from "./components/Dashboard";
 import Homepage from "./components/Homepage";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import {ContextProvider} from "./context/ChatContext"
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
  
   return (
       <ContextProvider>
+        
       <Router>
         <Routes>
           <Route path="/" exact element={<Homepage/>}></Route>
@@ -15,6 +18,7 @@ function App() {
            
         </Routes>
       </Router>
+      <ToastContainer/>
       </ContextProvider>
   );
 }
