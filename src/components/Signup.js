@@ -100,6 +100,7 @@ const Signup = ({ onClose }) => {
               required
             />
           </label>
+          
           <button type="submit">Signup</button>
         </form>
       </div>

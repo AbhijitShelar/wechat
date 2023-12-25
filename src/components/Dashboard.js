@@ -63,12 +63,11 @@ const Dashboard = () => {
     const handleReceive = (data) => {
       console.log("Received message:", data);
       console.log("messageRecipientId:", data.messageRecipientId);
-      console.log("Message Recipient name",data.messageRecipientName)
+      console.log("Message Recipient name", data.messageRecipientName);
       console.log("Sender Id:", data.messageSenderId);
       console.log("Sender name:", data.messageSenderName);
       console.log("Current user name:", nameHeader);
 
-  
       if (
         data.messageRecipientId === sessionStorage.getItem("userId") &&
         data.messageSenderName !== nameHeader
@@ -83,14 +82,13 @@ const Dashboard = () => {
             messageRecipientId: data.messageRecipientId,
             messageRecipientName: data.messageRecipientName,
             attach: data.attach,
-            timestamp:data.timestamp,
+            timestamp: data.timestamp,
           };
-        
+
           const newMessages = [...prevMessages, newMessage];
-        
+
           return newMessages;
         });
-        
       }
     };
 
@@ -108,15 +106,17 @@ const Dashboard = () => {
     }
   }, [isAuthenticated, navigate]);
 
-  // useEffect(() => {
-
-  //   fetchUsersList().then((usersList) => setUserList(usersList));
-  // }, []);
+ 
 
   useEffect(() => {
     if (socket) {
       socket.on("updateList", () => {
         fetchUsersList().then((usersList) => setUserList(usersList));
+        if(userList.length === 0)
+        {
+          setClick(false);
+        }
+
       });
     }
 
@@ -126,7 +126,7 @@ const Dashboard = () => {
         socket.off("updateList");
       }
     };
-  }, [socket]);
+  }, [socket,userList]);
 
   const handleUserClick = useCallback(
     (name, recieverId) => {
@@ -160,6 +160,12 @@ const Dashboard = () => {
                   className="user-header"
                   onClick={() => handleUserClick(user.name, user.recieverId)}
                 >
+                  <img
+                    src="https://imgs.search.brave.com/ja0XPP13-o-_cdTosLWtv__wH3lpZHjzZCL2922yGIU/rs:fit:500:0:0/g:ce/aHR0cHM6Ly9tYXN0/aW1vcm5pbmcuY29t/L3dwLWNvbnRlbnQv/dXBsb2Fkcy8yMDIz/LzA5L2RwLWltYWdl/LmpwZw"
+                    alt="Person"
+                    width="96"
+                    height="96"
+                  ></img>
                   {user.name}
                 </div>
               ))
@@ -175,8 +181,9 @@ const Dashboard = () => {
                 <span className="close-button" onClick={toggleAccountTab}>
                   &times;
                 </span>
-                <p className="tab">Account Details</p>
+                <p className="header-tab">Account Details</p>
                 <p className="tab">Name: {nameHeader}</p>
+                {/* <p className="tab">Email: {sessionStorage.getItem("email")}</p> */}
                 <Button className="logout-btn" onClick={handleLogout}>
                   Log Out
                 </Button>
@@ -184,7 +191,7 @@ const Dashboard = () => {
             )}
           </div>
 
-          {click ? (
+          {click  ? (
             <Chatboard
               chatText={chatText}
               setChatText={setChatText}
@@ -193,7 +200,6 @@ const Dashboard = () => {
               socket={socket}
               currentChatHeader={currentChatHeader}
               messages={messages}
-            
             />
           ) : (
             <section className="no-active-users">

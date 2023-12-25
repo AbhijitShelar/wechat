@@ -18,9 +18,11 @@ const User = new mongoose.model("User", {
 
 const ChatHistory=new mongoose.model("chathistory",{
   senderId:String,
+  senderName:String,
   recipientId:String,
+  recipientName:String,
   message:String,
-  
+  timestamp:String
 });
 
 
@@ -41,7 +43,6 @@ const handleUserJoined = async (io, socket, userData) => {
     io.emit("updateList");
   } catch (error) {
     if (error.name === 'DocumentNotFoundError') {
-      // Handle the case where the document is not found
       console.log(`User not found for userId: ${userData.userId}`);
     } else {
       console.error("Error handling user-joined event:", error);
@@ -93,8 +94,10 @@ const handleDisconnect = async (io, socket) => {
 const initializeSocket = (server) => {
   const io = socketIO(server, {
     cors: {
-      origin: "http://localhost:3001",
-      methods: ["GET", "POST"],
+      origin: '*',
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+      credentials: true,
+      optionsSuccessStatus: 204,
     },
   });
 

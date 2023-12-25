@@ -1,11 +1,16 @@
+.popup{
+  overflow: auto;
+
+}
 .signup-content {
     background-color: #fff;
-    padding: 100px;
+    padding: 80px;
     border-radius: 12px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
     position: relative;
     width: 300px;
     margin: auto;
+    overflow: auto;
   }
   
   .signup-form {

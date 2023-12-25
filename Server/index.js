@@ -8,19 +8,20 @@ const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const http = require("http"); // Import http module
 
-const {initializeSocket,User} = require("./socket");
+const { initializeSocket, User } = require("./socket");
 dotenv.config();
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+const corsOptions = {
+  origin: "*",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true,
+  optionsSuccessStatus: 204,
+};
 
-app.use(
-  cors({
-    origin: "http://localhost:3001",
-    methods: ["GET", "POST"],
-  })
-);
+app.use(cors(corsOptions));
 
 const server = http.createServer(app); // Create an HTTP server
 
@@ -118,7 +119,6 @@ app.get("/api/userslist", async (req, res) => {
   try {
     const usersList = await User.find();
     res.json(usersList);
-   
   } catch (error) {
     console.log(error);
   }
