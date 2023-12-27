@@ -4,12 +4,13 @@ import { Button } from 'react-bootstrap';
 import "./styles/Homepage.css";
 import Login from './Login';
 import Signup from './Signup';
+import { useMyContext } from '../context/ChatContext';
 
 
 
 const Homepage = () => {
  
-  const [showLogin, setShowLogin] = useState(false);
+  const {showLogin, setShowLogin} = useMyContext();
   const [showSignup,setShowSignup]=useState(false);
 
   

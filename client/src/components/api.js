@@ -6,8 +6,7 @@ import axios from 'axios';
 export const fetchUsersList = async () => {
   const myId = sessionStorage.getItem('userId');
   const getUserToken = () => {
-    // Implement your logic to retrieve the user's token (from local storage, cookies, etc.)
-    // For example, if you stored the token in local storage:
+   
     return sessionStorage.getItem('token');
   };
   
@@ -32,3 +31,16 @@ export const fetchUsersList = async () => {
     return [];
   }
 };
+
+export  const fetchAccountDetails= async () =>{
+  const myId = sessionStorage.getItem('userId');
+
+  try{
+    const response=await axios.post(`${BASE_URL}/api/accountdetails`,myId);
+    return response.data;
+  } catch(error){
+    console.error("Error fetching users list:", error);
+    
+  }
+
+}

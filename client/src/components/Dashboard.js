@@ -9,7 +9,7 @@ import { fetchUsersList } from "./api";
 import BASE_URL from "./config";
 
 import Chatboard from "./Chatboard";
-import { Button } from "react-bootstrap";
+import AccountDetails from "./AccountDetails";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ const Dashboard = () => {
     isAuthenticated,
     currentChatHeader,
     setCurrentChatHeader,
-    setIsAuthenticated,
+   
   } = useMyContext();
   const [chatText, setChatText] = useState("");
   const nameHeader = sessionStorage.getItem("name");
@@ -74,7 +74,6 @@ const Dashboard = () => {
         data.messageRecipientId === sessionStorage.getItem("userId") &&
         data.messageSenderName !== nameHeader
       ) {
-        // appendMessage(`${data.name}: ${data.message}`, "left");
 
         setMessages((prevMessages) => {
           const newMessage = {
@@ -103,11 +102,14 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate("/");
+      navigate("/login");
+       
+      if(!isAuthenticated && sessionStorage.getItem("token") ){
       toast.error("Please Login First", {
         position: toast.POSITION.TOP_CENTER,
         autoClose: 1000, // milliseconds until the toast closes automatically
       });    }
+    }
   }, [isAuthenticated, navigate]);
 
   useEffect(() => {
@@ -137,21 +139,8 @@ const Dashboard = () => {
     [setCurrentChatHeader]
   );
 
-  const [isAccountTabOpen, setIsAccountTabOpen] = useState(false);
 
-  const toggleAccountTab = () => {
-    setIsAccountTabOpen((prev) => !prev);
-  };
-  const handleLogout = () => {
-    toast.warning("Logged Out", {
-      position: toast.POSITION.TOP_CENTER,
-      autoClose: 2000,
-       // milliseconds until the toast closes automatically
-    });
-    setIsAuthenticated(false);
-    sessionStorage.clear();
-  };
-
+  
   return (
     <div className="dashboard-container">
       {isAuthenticated ? (
@@ -172,28 +161,13 @@ const Dashboard = () => {
                     height="96"
                   ></img>
                   {user.name}
+
                 </div>
               ))
             ) : (
               <h1>No active users available</h1>
             )}
-            <div className="account-tab-button" onClick={toggleAccountTab}>
-              My Account
-            </div>
-
-            {isAccountTabOpen && (
-              <div className="account-tab">
-                <span className="close-button" onClick={toggleAccountTab}>
-                  &times;
-                </span>
-                <p className="header-tab">Account Details</p>
-                <p className="tab">Name: {nameHeader}</p>
-                {/* <p className="tab">Email: {sessionStorage.getItem("email")}</p> */}
-                <Button className="logout-btn" onClick={handleLogout}>
-                  Log Out
-                </Button>
-              </div>
-            )}
+            <AccountDetails nameHeader={nameHeader}/>
           </div>
 
           {click ? (

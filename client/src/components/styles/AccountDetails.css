@@ -1,0 +1,102 @@
+/* styles/AccountDetails.css */
+
+.account-tab-button {
+  position: absolute;
+  bottom: 1rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18vw;
+  height: 6vh;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  cursor: pointer;
+  background: linear-gradient(to right, #87ebd2, #55c9a6);
+  color: #090909;
+}
+
+.account-tab {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 25vw;
+  padding: 10px;
+  background: linear-gradient(to bottom, #74afd7, #367fa9);
+  color: #0c0b0b;
+  border-radius: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tab,
+.header-tab {
+
+  width: 80%; 
+  height: 4vh;
+  border-radius: 15px;
+  text-align: center;
+  padding: 15px;
+  color: #336699;
+  font-size: larger;
+  font-weight: bold;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+  cursor: none;
+  background: #dbe5e5;
+  text-wrap: wrap;
+}
+
+.tab:hover {
+  transform: scale(1.05);
+}
+
+.header-tab {
+  background: #555;
+  color: white;
+}
+
+.close-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 28px;
+  border-radius: 50%;
+  color: #020e1b;
+  margin-bottom:5rem ;
+}
+
+.close-button:hover {
+  color: #ff5555;
+}
+
+
+
+.account-tab-button:hover {
+  background: #0056b3;
+}
+
+.logout-btn {
+  border: 1px solid #ccc;
+  background: #ff6666;
+  width: 80%; 
+  color: #336699;
+  padding: 15px;
+  border-radius: 15px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 20px;
+  font-weight: bolder;
+  margin-top: 10px;
+  transition: background 0.3s ease;
+}
+
+.logout-btn:hover {
+  background: #cc0000;
+}

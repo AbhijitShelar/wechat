@@ -14,7 +14,9 @@ const Chatboard = ({
   currentChatHeader,
   messages,
 }) => {
+  
   const [myMessages, setMyMessages] = useState([]);
+
   const allMessages = [...messages, ...myMessages];
   allMessages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
 
@@ -32,10 +34,10 @@ const Chatboard = ({
   };
 
   const handleClick = () => {
-    if(chatText===""){
+    if(chatText === ""){
       toast.error("Type a message", {
         position: toast.POSITION.TOP_CENTER,
-        autoClose: 2000, // milliseconds until the toast closes automatically
+        autoClose: 2000, 
       });
     }
     else{
@@ -50,7 +52,7 @@ const Chatboard = ({
       timestamp: new Date().toISOString()
       
     });
-    // appendMessage(`You : ${chatText}`, "right");
+
     setMyMessages((prevMessages) => [
       ...prevMessages,
       {

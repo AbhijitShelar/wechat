@@ -99,7 +99,6 @@ const validateTokenMiddleware = (req, res, next) => {
   }
 };
 
-//Login Api And validation
 app.post("/api/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -144,6 +143,18 @@ app.get("/api/userslist", validateTokenMiddleware, async (req, res) => {
     console.log(error);
   }
 });
+//get account details of user
+app.post("/api/accountdetails", validateTokenMiddleware, async (req, res) => {
+  try {
+    const {myId}=req.body;
+
+    const accountDetails= await userInfo.findOne({myId});
+    res.json(accountDetails);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {

@@ -18,9 +18,13 @@ const [currentChatHeader,setCurrentChatHeader]=useState();
     // Update local storage when the authentication state changes
     sessionStorage.setItem("isAuthenticated", JSON.stringify(isAuthenticated));
   }, [isAuthenticated]);
+
+  const [showLogin, setShowLogin] = useState(false);
   
+
+
   return (
-    <ChatContext.Provider value={{ isAuthenticated, setIsAuthenticated ,currentChatHeader,setCurrentChatHeader}}>
+    <ChatContext.Provider value={{ isAuthenticated, setIsAuthenticated ,currentChatHeader,setCurrentChatHeader,showLogin, setShowLogin}}>
       {children}
     </ChatContext.Provider>
   );
